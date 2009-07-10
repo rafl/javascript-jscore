@@ -13,3 +13,5 @@ Debian*
 README
 JavaScript-JSCore-*
 *.bs
+*.o
+xs/*.c

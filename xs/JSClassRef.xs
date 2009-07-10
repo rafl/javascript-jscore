@@ -52,6 +52,8 @@ initialize_cb (JSContextRef ctx, JSObjectRef obj) {
 	int count;
 	perl_jsclass_def_t *defs = (perl_jsclass_def_t *)JSObjectGetPrivate (obj);
 
+	PERL_UNUSED_ARG (ctx);
+
 	dSP;
 
 	ENTER;
@@ -349,7 +351,7 @@ call_as_function_cb (JSContextRef ctx, JSObjectRef obj, JSObjectRef this_obj,
                      size_t argument_count, const JSValueRef arguments[],
                      JSValueRef *exception) {
 	JSValueRef ret;
-	int count, i;
+	unsigned int count, i;
 	SV *err;
 	perl_jsclass_def_t *defs = (perl_jsclass_def_t *)JSObjectGetPrivate (obj);
 
@@ -398,7 +400,7 @@ call_as_constructor_cb (JSContextRef ctx, JSObjectRef constructor,
                         size_t argument_count, const JSValueRef arguments[],
                         JSValueRef *exception) {
 	JSObjectRef ret;
-	int count, i;
+	unsigned int count, i;
 	SV *err;
 	perl_jsclass_def_t *defs = (perl_jsclass_def_t *)JSObjectGetPrivate (constructor);
 
@@ -562,7 +564,7 @@ new (class, definition)
 		SV **he;
 		char *class_name;
 		JSClassRef parent_class = NULL;
-		int i;
+		unsigned int i;
 	INIT:
 		he = hv_fetchs (definition, "attributes", 0);
 		if (he && *he) {
@@ -687,7 +689,7 @@ create_instance (class, ctx)
 		JSContextRef ctx
 	PREINIT:
 		perl_jsclass_def_t *perl_def;
-		int i;
+		unsigned int i;
 		SV *ctx_sv = ST (1);
 	INIT:
 		perl_def = (perl_jsclass_def_t *)malloc (sizeof (perl_jsclass_def_t));

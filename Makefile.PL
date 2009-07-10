@@ -16,7 +16,7 @@ WriteMakefile(
         VERSION_FROM => 'lib/JavaScript/JSCore.pm',
         ABSTRACT_FROM => 'lib/JavaScript/JSCore.pm',
         XSPROTOARG      => '-noprototypes',
-        INC             => '-Wall -Werror -Iperl_glue '. $pkginfo{cflags},
+        INC             => '-Wall -Iperl_glue '. $pkginfo{cflags},
         LIBS            => $pkginfo{libs},
         do {
             my (@clean, @OBJECT, %XS);

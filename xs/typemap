@@ -1,0 +1,82 @@
+TYPEMAP
+
+JSContextRef		T_JS_WRAPPER
+JSGlobalContextRef	T_JS_WRAPPER
+JSClassRef			T_JS_WRAPPER
+JSValueRef			T_JS_WRAPPER
+JSObjectRef			T_JS_WRAPPER
+JSStringRef			T_JS_STRING
+JSType				T_JS_TYPE
+
+INPUT
+
+T_JS_WRAPPER
+	$var = Sv${ \$type } ($arg);
+
+T_JS_STRING
+	$var = JSStringCreateWithUTF8CString (SvPVutf8_nolen ($arg));
+
+T_JS_TYPE
+	{
+		char *_type = SvPV_nolen ($arg);
+
+		if (strEQ (_type, \"undefined\")) {
+			$var = kJSTypeUndefined;
+		} else if (strEQ (_type, \"null\")) {
+			$var = kJSTypeNull;
+		} else if (strEQ (_type, \"boolean\")) {
+			$var = kJSTypeBoolean;
+		} else if (strEQ (_type, \"number\")) {
+			$var = kJSTypeNumber;
+		} else if (strEQ (_type, \"string\")) {
+			$var = kJSTypeString;
+		} else if (strEQ (_type, \"object\")) {
+			$var = kJSTypeObject;
+		} else {
+			croak (\"invalid JS type\");
+		}
+	}
+
+OUTPUT
+
+T_JS_WRAPPER
+	$arg = newSV${ \$type } ($var);
+
+T_JS_STRING
+	{
+		char *buf;
+		size_t buf_size, size;
+
+		buf_size = JSStringGetMaximumUTF8CStringSize ($var);
+		buf = (char *)malloc (buf_size);
+
+		size = JSStringGetUTF8CString ($var, buf, buf_size);
+
+		$arg = newSVpv (buf, size);
+
+		free (buf);
+	}
+
+T_JS_TYPE
+	switch ($var) {
+		case kJSTypeUndefined:
+			sv_setpv ($arg, \"undefined\");
+			break;
+		case kJSTypeNull:
+			sv_setpv ($arg, \"null\");
+			break;
+		case kJSTypeBoolean:
+			sv_setpv ($arg, \"boolean\");
+			break;
+		case kJSTypeNumber:
+			sv_setpv ($arg, \"number\");
+			break;
+		case kJSTypeString:
+			sv_setpv ($arg, \"string\");
+			break;
+		case kJSTypeObject:
+			sv_setpv ($arg, \"object\");
+			break;
+		default:
+			croak (\"invalid JSType\");
+	}
